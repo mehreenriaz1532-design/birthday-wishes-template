@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday!</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+            font-family: 'Arial', sans-serif;
+            color: white;
+            overflow-x: hidden;
+            text-align: center;
+        }
+
+        /* Mobile Optimization Containers */
+        .container {
+            width: 90%;
+            max-width: 500px;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h1 {
+            font-size: calc(2.5rem + 1vw); /* Responsive Text */
+            margin: 0.5rem 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        p {
+            font-size: calc(1.1rem + 0.5vw); /* Responsive Text */
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ff758c;
+            background-color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Page Transitions & Sections */
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out forwards;
+        }
+
+        .page.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #message {
+            font-size: 1.5rem;
+            margin-top: 1.5rem;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Custom Content Form & Display */
+        .form-group {
+            width: 100%;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            border-radius: 10px;
+            border: none;
+            font-family: Arial, sans-serif;
+            font-size: 1rem;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+
+        input[type="file"] {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+
+        .preview-area {
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .uploaded-img {
+            max-width: 100%;
+            max-height: 250px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            margin-top: 15px;
+            object-fit: cover;
+        }
+
+        .custom-text-display {
+            font-size: 1.3rem;
+            font-style: italic;
+            margin-top: 15px;
+            background: rgba(0, 0, 0, 0.15);
+            padding: 15px;
+            border-radius: 10px;
+            word-wrap: break-word;
+        }
+
+        /* Confetti Animation */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f1c40f;
+            opacity: 0.7;
+            animation: fall 3s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- PAGE 1: Welcome & Wishes -->
+        <div id="page1" class="page active">
+            <h1 id="greeting">Happy Birthday!</h1>
+            <p id="sub-greeting">Click the button below to open your surprise!</p>
+            <button class="btn" onclick="startSurprise()">Click Here!</button>
+            <div id="message">Wishing you a day filled with happiness and a year filled with joy! 🎉</div>
+        </div>
+
+        <!-- PAGE 2: Customer Upload & Type Section -->
+        <div id="page2" class="page">
+            <h1>Create Your Card 🎁</h1>
+            <p>Add your special photos and unique messages below.</p>
+            
+            <div class="form-group">
+                <label for="userMsg">Type or Paste Your Message:</label>
+                <textarea id="userMsg" placeholder="Write something beautiful here..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="userPhoto">Upload Birthday Photo:</label>
+                <input type="file" id="userPhoto" accept="image/*" onchange="previewFile()">
+            </div>
+
+            <button class="btn" onclick="generateFinalCard()">Show Final Preview ✨</button>
+
+            <!-- Real-time Preview Area -->
+            <div class="preview-area" id="previewArea" style="display: none;">
+                <h3>Your Live Card:</h3>
+                <div id="textPreview" class="custom-text-display"></div>
+                <img id="imagePreview" class="uploaded-img" src="" alt="Birthday Preview" style="display: none;">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function startSurprise() {
+            let name = prompt("Enter the birthday person's name:");
+            if (name) {
+                document.getElementById("greeting").innerText = `Happy Birthday, ${name}! 🎂`;
+                document.getElementById("sub-greeting").innerText = "Wishing you all the best!";
+            }
+            
+            // Show the standard message
+            document.getElementById("message").style.display = "block";
+
+            // Trigger confetti
+            for (let i = 0; i < 70; i++) {
+                createConfetti();
+            }
+
+            // Mobile-friendly transition delay to let user see confetti before auto-switching
+            setTimeout(() => {
+                navigateToPage("page2");
+            }, 3000); 
+        }
+
+        function navigateToPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            // Show target page
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        // Live Image Upload Reader
+        function previewFile() {
+            const preview = document.getElementById('imagePreview');
+            const file = document.getElementById('userPhoto').files[0];
+            const reader = new FileReader();
+
+            reader.addEventListener("load", function () {
+                preview.src = reader.result;
+                preview.style.display = "block";
+                document.getElementById('previewArea').style.display = "block";
+            }, false);
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Generate custom message and text state
+        function generateFinalCard() {
+            const msgInput = document.getElementById('userMsg').value;
+            const textPreview = document.getElementById('textPreview');
+            
+            if (msgInput.trim() !== "") {
+                textPreview.innerText = msgInput;
+                document.getElementById('previewArea').style.display = "block";
+            } else {
+                textPreview.innerText = "No custom message added yet!";
+            }
+            
+            alert("Your custom details updated successfully!");
+        }
+
+        function createConfetti() {
+            const confetti = document.createElement('div');
+            confetti.classList.add('confetti');
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.animationDuration = Math.random() * 2 + 2 + 's';
+            confetti.style.backgroundColor = getRandomColor();
+            confetti.style.width = Math.random() * 8 + 5 + 'px'; // slightly smaller for mobile screens
+            confetti.style.height = confetti.style.width;
+            document.body.appendChild(confetti);
+            
+            setTimeout(() => {
+                confetti.remove();
+            }, 3000);
+        }
+
+        function getRandomColor() {
+            const colors = ['#ff4757', '#2ed573', '#1e90ff', '#ffa502', '#9b59b6', '#ff6b81'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+    </script>
+</body>
+</html>
